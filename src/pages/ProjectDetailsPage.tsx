@@ -287,6 +287,55 @@ function ProjectDetailsPage() {
         )}
       </div>
 
+      <div className="detail-panel project-files-panel">
+        <div className="section-header">
+          <div><h2>Files</h2><p>Keep project documents and assets available to the whole team.</p></div>
+          <span className="result-count">{attachments.length} {attachments.length === 1 ? "file" : "files"}</span>
+        </div>
+        <form className="file-upload-form" onSubmit={uploadFile}>
+          <label className="file-picker">Choose file
+            <input type="file" onChange={(event) => setSelectedFile(event.target.files?.[0] ?? null)} accept=".pdf,.txt,.csv,.zip,.json,image/jpeg,image/png,image/webp,image/gif" />
+          </label>
+          <span className="file-help">{selectedFile ? selectedFile.name : "PDF, images, ZIP, JSON, CSV or text · max 10 MB"}</span>
+          <button className="button-primary" disabled={!selectedFile || uploading} type="submit">{uploading ? "Uploading..." : "Upload file"}</button>
+        </form>
+        {attachments.length === 0 ? <p className="empty-comment">No files uploaded yet.</p> : (
+          <div className="file-list">
+            {attachments.map((attachment) => (
+              <article className="file-card" key={attachment.id}>
+                <div className="file-icon">FILE</div>
+                <div className="file-info"><strong>{attachment.filename}</strong><span>{Math.ceil(attachment.size / 1024)} KB · uploaded by {attachment.uploader.name}</span></div>
+                <div className="file-actions">
+                  <a className="button-secondary" href={api.downloadAttachment(attachment.id)}>Download</a>
+                  {attachment.uploaderId === user?.id && <button className="button-danger" type="button" onClick={() => void removeAttachment(attachment)}>Delete</button>}
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="detail-panel team-members-panel">
+        <div className="section-header"><div><h2>Project members</h2><p>Manage roles for collaborators on this project.</p></div><span className="result-count">{members.length}</span></div>
+        <div className="member-management-list">
+          {members.map((member) => (
+            <div className="member-management-row" key={member.user.id}>
+              <div className="team-avatar">{member.user.name.charAt(0).toUpperCase()}</div>
+              <div className="member-management-info"><strong>{member.user.name}</strong><span>{member.user.email}</span></div>
+              <span className="status-badge status-active">{member.role}</span>
+              {isOwner && member.user.id !== project.ownerId && (
+                <>
+                  <select aria-label={`Role for ${member.user.name}`} value={member.role} onChange={(event) => void changeMemberRole(member.user.id, event.target.value as "ADMIN" | "MEMBER")}>
+                    <option value="MEMBER">Member</option><option value="ADMIN">Admin</option>
+                  </select>
+                  <button className="button-danger" type="button" onClick={() => void removeMember(member.user.id)}>Remove</button>
+                </>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
       <section className="detail-panel comments-panel">
         <div className="section-header"><div><h2>Discussion</h2><p>Keep project decisions and updates with the work.</p></div><span className="result-count">{comments.length} {comments.length === 1 ? "comment" : "comments"}</span></div>
         <form className="comment-form" onSubmit={addComment}>
