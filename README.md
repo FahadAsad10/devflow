@@ -1,32 +1,35 @@
-# React + TypeScript + Vite
+# DevFlow
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+DevFlow is a full-stack developer project management SaaS built with React, TypeScript, Express, PostgreSQL, and Prisma.
 
-Currently, two official plugins are available:
+## Frontend
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+From the repository root:
 
-## React Compiler
+npm install
+npm run build
+npm run dev
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Backend
 
-## Expanding the Oxlint configuration
+From the server directory:
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+npm install
+cp .env.example .env
+npm run prisma:generate
+npm run prisma:migrate
+npm run dev
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
+The API runs on port 4000 by default.
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## Production checklist
+
+- Authentication uses bcrypt password hashing and HttpOnly JWT cookies.
+- Helmet security headers and API rate limiting are enabled.
+- Production HTTP requests are redirected to HTTPS.
+- Secrets are supplied through environment variables.
+- Client forms validate input and API routes validate again with Zod.
+- Privacy and Terms pages are included.
+- Cookie consent gates optional analytics.
+- Custom 404 handling, sitemap, robots.txt, favicon, metadata, Open Graph preview, responsive layouts, and accessibility focus states are included.
+- Before launch, replace devflow.example.com with the actual production domain and have the legal templates reviewed for the operating jurisdiction.
