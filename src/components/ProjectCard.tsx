@@ -1,32 +1,28 @@
+import { Link } from "react-router-dom";
+import type { Project } from "../types/project";
+
 type ProjectCardProps = {
-  name: string;
-  description: string;
-  tasks: number;
+  project: Project;
 };
 
-function ProjectCard({
-  name,
-  description,
-  tasks,
-}: ProjectCardProps) {
+function ProjectCard({ project }: ProjectCardProps) {
+  const progress = project.tasksTotal
+    ? Math.round((project.tasksCompleted / project.tasksTotal) * 100)
+    : 0;
+
   return (
-    <div className="project-card">
-      <div className="project-icon">
-        {name.charAt(0)}
+    <article className="project-card">
+      <div className="project-icon">{project.name.charAt(0)}</div>
+      <h3>{project.name}</h3>
+      <p>{project.description}</p>
+      <div className="progress-track">
+        <div className="progress-fill" style={{ width: `${progress}%` }} />
       </div>
-
-      <h3>{name}</h3>
-
-      <p>{description}</p>
-
       <div className="project-footer">
-        <span>{tasks} tasks</span>
-
-        <button className="view-button">
-          View
-        </button>
+        <span>{progress}% · {project.tasksCompleted}/{project.tasksTotal} tasks</span>
+        <Link className="view-button" to={`/projects/${project.id}`}>View</Link>
       </div>
-    </div>
+    </article>
   );
 }
 
