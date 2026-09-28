@@ -13,6 +13,8 @@ const projectSchema = z.object({
   dueDate: z.string().date().optional(),
 });
 
+const projectUpdateSchema = projectSchema.partial().extend({ dueDate: z.string().date().nullable().optional() }).refine((value) => Object.keys(value).length > 0, { message: "At least one field is required." });
+
 const accessFilter = (userId: string) => ({
   OR: [{ ownerId: userId }, { memberships: { some: { userId } } }],
 });
@@ -77,3 +79,54 @@ router.get("/:id", async (req: AuthRequest, res, next) => {
 });
 
 export default router;
+
+
+router.patch("/:id", async (req: AuthRequest, res, next) => {
+  try {
+    const projectId = typeof req.params.id === "string" ? req.params.id : undefined;
+    if (!projectId) return res.status(400).json({ message: "Project id is required." });
+
+    const input = projectUpdateSchema.parse(req.body);
+    const existing = await prisma.project.findFirst({
+      where: { id: projectId, ...accessFilter(req.userId!) },
+      select: { id: true, ownerId: true },
+    });
+    if (!existing) return res.status(404).json({ message: "Project not found." });
+    if (existing.ownerId !== req.userId) return res.status(403).json({ message: "Only the project owner can edit it." });
+
+    const project = await prisma.project.update({
+      where: { id: existing.id },
+      data: {
+        ...(input.name !== undefined ? { name: input.name } : {}),
+        ...(input.description !== undefined ? { description: input.description } : {}),
+        ...(input.status !== undefined ? { status: input.status } : {}),
+        ...(input.dueDate !== undefined ? { dueDate: input.dueDate ? new Date(input.dueDate) : null } : {}),
+      },
+      include: {
+        _count: { select: { tasks: true, memberships: true } },
+        tasks: { select: { status: true } },
+      },
+    });
+    return res.json({ project });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+router.delete("/:id", async (req: AuthRequest, res, next) => {
+  try {
+    const projectId = typeof req.params.id === "string" ? req.params.id : undefined;
+    if (!projectId) return res.status(400).json({ message: "Project id is required." });
+
+    const existing = await prisma.project.findFirst({
+      where: { id: projectId, ownerId: req.userId! },
+      select: { id: true },
+    });
+    if (!existing) return res.status(404).json({ message: "Project not found." });
+
+    await prisma.project.delete({ where: { id: existing.id } });
+    return res.status(204).send();
+  } catch (error) {
+    return next(error);
+  }
+});
