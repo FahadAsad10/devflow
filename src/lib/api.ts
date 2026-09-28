@@ -32,6 +32,14 @@ export type ApiTask = {
   project?: { id: string; name: string };
 };
 
+export type ApiComment = {
+  id: string;
+  body: string;
+  projectId: string;
+  createdAt: string;
+  user: { id: string; name: string };
+};
+
 export type ProjectMember = {
   role: "OWNER" | "ADMIN" | "MEMBER";
   user: { id: string; name: string; email: string };
@@ -75,6 +83,9 @@ export const api = {
   project: (id: string) => request<{ project: ApiProject }>(`/api/projects/${id}`),
   createProject: (input: { name: string; description: string; status: ApiProject["status"]; dueDate?: string }) =>
     request<{ project: ApiProject }>("/api/projects", { method: "POST", body: JSON.stringify(input) }),
+  updateProject: (id: string, input: Partial<{ name: string; description: string; status: ApiProject["status"]; dueDate: string | null }>) =>
+    request<{ project: ApiProject }>(`/api/projects/${id}`, { method: "PATCH", body: JSON.stringify(input) }),
+  deleteProject: (id: string) => request<void>(`/api/projects/${id}`, { method: "DELETE" }),
   tasks: () => request<{ tasks: ApiTask[] }>("/api/tasks"),
   projectTasks: (projectId: string) => request<{ tasks: ApiTask[] }>(`/api/tasks/project/${projectId}`),
   createTask: (projectId: string, input: { title: string; description?: string; status?: ApiTask["status"] }) =>
@@ -83,4 +94,8 @@ export const api = {
     request<{ task: ApiTask }>(`/api/tasks/${id}`, { method: "PATCH", body: JSON.stringify(input) }),
   deleteTask: (id: string) => request<void>(`/api/tasks/${id}`, { method: "DELETE" }),
   teams: () => request<{ members: TeamMember[] }>("/api/teams"),
+  comments: (projectId: string) => request<{ comments: ApiComment[] }>(`/api/comments/project/${projectId}`),
+  createComment: (projectId: string, body: string) =>
+    request<{ comment: ApiComment }>(`/api/comments/project/${projectId}`, { method: "POST", body: JSON.stringify({ body }) }),
+  deleteComment: (id: string) => request<void>(`/api/comments/${id}`, { method: "DELETE" }),
 };
