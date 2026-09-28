@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { api, type ApiProject, type TeamInvitation, type TeamMember } from "../lib/api";
 
 function TeamsPage() {
@@ -29,7 +29,7 @@ function TeamsPage() {
 
   useEffect(() => { void load(); }, []);
 
-  async function invite(event: React.FormEvent<HTMLFormElement>) {
+  async function invite(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
     setMessage("");
