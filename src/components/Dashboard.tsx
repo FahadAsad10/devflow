@@ -16,7 +16,7 @@ function Dashboard() {
       .finally(() => setLoading(false));
   }, []);
 
-  const activeTasks = projects.reduce((total, project) => total + (project._count?.tasks ?? 0), 0);
+  const activeTasks = projects.reduce((total, project) => total + (project.tasks?.filter((task) => task.status !== "DONE").length ?? 0), 0);
   const completedProjects = projects.filter((project) => project.status === "COMPLETED").length;
   const teamMembers = new Set(
     projects.flatMap((project) => project.memberships?.map((membership) => membership.user.id) ?? []),
