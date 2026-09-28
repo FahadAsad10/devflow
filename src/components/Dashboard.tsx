@@ -1,80 +1,43 @@
+import { Link } from "react-router-dom";
 import StatCard from "./StatCard";
 import ProjectCard from "./ProjectCard";
+import { initialProjects } from "../data/projects";
 
 function Dashboard() {
+  const activeTasks = initialProjects.reduce((total, project) => total + project.tasksTotal - project.tasksCompleted, 0);
+  const completed = initialProjects.reduce((total, project) => total + project.tasksCompleted, 0);
+
   return (
     <section className="dashboard">
       <div className="dashboard-header">
         <div>
           <p className="dashboard-label">OVERVIEW</p>
-
           <h1>Dashboard</h1>
-
-          <p className="dashboard-description">
-            Here's what's happening with your projects.
-          </p>
+          <p className="dashboard-description">Plan, track, and ship your development work.</p>
         </div>
-
-        <button className="new-project-button">
-          + New Project
-        </button>
+        <Link className="button-primary inline-button" to="/projects">+ New Project</Link>
       </div>
 
       <div className="stats-grid">
-        <StatCard
-          title="Total Projects"
-          value={8}
-        />
-
-        <StatCard
-          title="Active Tasks"
-          value={24}
-        />
-
-        <StatCard
-          title="Completed"
-          value={16}
-        />
-
-        <StatCard
-          title="Team Members"
-          value={6}
-        />
+        <StatCard title="Total Projects" value={initialProjects.length} />
+        <StatCard title="Active Tasks" value={activeTasks} />
+        <StatCard title="Completed" value={completed} />
+        <StatCard title="Team Members" value={initialProjects.reduce((total, project) => total + project.members, 0)} />
       </div>
 
       <div className="projects-section">
         <div className="section-header">
           <div>
             <h2>Your Projects</h2>
-
-            <p>
-              Manage and track your current projects.
-            </p>
+            <p>Manage and track your current projects.</p>
           </div>
-
-          <button className="view-all-button">
-            View all
-          </button>
+          <Link className="view-all-button" to="/projects">View all</Link>
         </div>
 
         <div className="projects-grid">
-          <ProjectCard
-            name="DevFlow"
-            description="Developer project management platform."
-            tasks={12}
-          />
-
-          <ProjectCard
-            name="Smart Budget Tracker"
-            description="Personal finance tracking application."
-            tasks={8}
-          />
-
-          <ProjectCard
-            name="PDF Clearer"
-            description="PDF enhancement and OCR application."
-            tasks={15}
-          />
+          {initialProjects.map((project) => (
+            <ProjectCard key={project.id} project={project} />
+          ))}
         </div>
       </div>
     </section>
