@@ -15,5 +15,8 @@ export function errorHandler(
   }
 
   console.error(error);
-  return res.status(500).json({ message: "An unexpected server error occurred." });
+  const message = error instanceof Error ? error.message : "An unexpected server error occurred.";
+  return res.status(500).json({
+    message: process.env.NODE_ENV === "development" ? message : "An unexpected server error occurred.",
+  });
 }
