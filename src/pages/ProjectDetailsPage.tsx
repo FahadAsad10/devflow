@@ -142,6 +142,53 @@ function ProjectDetailsPage() {
     }
   }
 
+  async function uploadFile(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!id || !selectedFile) return;
+    setUploading(true);
+    setError("");
+    try {
+      const response = await api.uploadAttachment(id, selectedFile);
+      setAttachments((current) => [response.attachment, ...current]);
+      setSelectedFile(null);
+      event.currentTarget.reset();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unable to upload file.");
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  async function removeAttachment(attachment: ApiAttachment) {
+    if (!window.confirm(`Delete ${attachment.filename}?`)) return;
+    try {
+      await api.deleteAttachment(attachment.id);
+      setAttachments((current) => current.filter((item) => item.id !== attachment.id));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unable to delete file.");
+    }
+  }
+
+  async function changeMemberRole(memberId: string, role: "ADMIN" | "MEMBER") {
+    if (!id) return;
+    try {
+      await api.updateMemberRole(id, memberId, role);
+      setProject((current) => current ? { ...current, memberships: current.memberships?.map((member) => member.user.id === memberId ? { ...member, role } : member) } : current);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unable to update member.");
+    }
+  }
+
+  async function removeMember(memberId: string) {
+    if (!id || !window.confirm("Remove this member from the project?")) return;
+    try {
+      await api.removeMember(id, memberId);
+      setProject((current) => current ? { ...current, memberships: current.memberships?.filter((member) => member.user.id !== memberId) } : current);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unable to remove member.");
+    }
+  }
+
   if (loading) return <section className="page"><div className="empty-state"><h2>Loading project...</h2></div></section>;
 
   if (error && !project) {
@@ -209,6 +256,10 @@ function ProjectDetailsPage() {
         <form className="task-inline-form" onSubmit={createTask}>
           <input aria-label="New task title" value={taskTitle} onChange={(event) => setTaskTitle(event.target.value)} placeholder="Add a task..." minLength={2} required />
           <input aria-label="New task description" value={taskDescription} onChange={(event) => setTaskDescription(event.target.value)} placeholder="Description (optional)" />
+          <select aria-label="Assign task" value={taskAssigneeId} onChange={(event) => setTaskAssigneeId(event.target.value)}>
+            <option value="">Unassigned</option>
+            {members.map((member) => <option key={member.user.id} value={member.user.id}>{member.user.name}</option>)}
+          </select>
           <button className="button-primary" disabled={taskSaving} type="submit">{taskSaving ? "Adding..." : "Add task"}</button>
         </form>
 
