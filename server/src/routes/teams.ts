@@ -210,7 +210,10 @@ router.delete("/projects/:projectId/members/:userId", async (req: AuthRequest, r
     if (!project) return res.status(403).json({ message: "You cannot manage this project." });
     if (memberUserId === project.ownerId) return res.status(400).json({ message: "The owner cannot be removed." });
 
-    await prisma.membership.deleteMany({ where: { projectId, userId: memberUserId } });
+    await prisma.$transaction([
+      prisma.membership.deleteMany({ where: { projectId, userId: memberUserId } }),
+      prisma.task.updateMany({ where: { projectId, assigneeId: memberUserId }, data: { assigneeId: null } }),
+    ]);
     return res.status(204).send();
   } catch (error) {
     return next(error);
