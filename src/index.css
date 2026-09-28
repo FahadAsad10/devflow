@@ -1531,3 +1531,63 @@ html[data-theme="dark"] .invitation-card { border-color: #263244; }
 @media (max-width: 800px) {
   .team-management-grid { grid-template-columns: 1fr; }
 }
+
+
+.analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin: 0 0 42px;
+}
+.analytics-card {
+  padding: 22px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.04);
+}
+.analytics-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+.analytics-card-header h2 { margin: 0; font-size: 18px; }
+.analytics-card-header strong { font-size: 28px; }
+.analytics-progress {
+  height: 10px;
+  margin: 20px 0 16px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e5e7eb;
+}
+.analytics-progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #2563eb;
+  transition: width .35s ease;
+}
+.analytics-breakdown {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 22px;
+  color: #6b7280;
+  font-size: 13px;
+}
+.analytics-breakdown b { color: #111827; }
+.analytics-note { margin: 16px 0 0; color: #6b7280; font-size: 13px; }
+
+html[data-theme="dark"] .analytics-card {
+  background: #111827;
+  border-color: #263244;
+}
+html[data-theme="dark"] .analytics-breakdown b,
+html[data-theme="dark"] .analytics-card-header strong {
+  color: #f9fafb;
+}
+html[data-theme="dark"] .analytics-progress { background: #334155; }
+
+@media (max-width: 800px) {
+  .analytics-grid { grid-template-columns: 1fr; }
+}
