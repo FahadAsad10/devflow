@@ -14,17 +14,36 @@ function TeamsPage() {
 
   async function load() {
     setLoading(true);
-    try {
-      const [teamResponse, projectResponse, invitationResponse] = await Promise.all([api.teams(), api.projects(), api.invitations()]);
-      setMembers(teamResponse.members);
-      setProjects(projectResponse.projects);
-      setInvitations(invitationResponse.invitations);
-      setProjectId((current) => current || projectResponse.projects[0]?.id || "");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Unable to load team.");
-    } finally {
-      setLoading(false);
+    setError("");
+    const errors: string[] = [];
+
+    const [teamResult, projectResult, invitationResult] = await Promise.allSettled([
+      api.teams(),
+      api.projects(),
+      api.invitations(),
+    ]);
+
+    if (teamResult.status === "fulfilled") {
+      setMembers(teamResult.value.members);
+    } else {
+      errors.push(teamResult.reason instanceof Error ? `Team: ${teamResult.reason.message}` : "Team: unable to load.");
     }
+
+    if (projectResult.status === "fulfilled") {
+      setProjects(projectResult.value.projects);
+      setProjectId((current) => current || projectResult.value.projects[0]?.id || "");
+    } else {
+      errors.push(projectResult.reason instanceof Error ? `Projects: ${projectResult.reason.message}` : "Projects: unable to load.");
+    }
+
+    if (invitationResult.status === "fulfilled") {
+      setInvitations(invitationResult.value.invitations);
+    } else {
+      errors.push(invitationResult.reason instanceof Error ? `Invitations: ${invitationResult.reason.message}` : "Invitations: unable to load.");
+    }
+
+    if (errors.length) setError(errors.join(" "));
+    setLoading(false);
   }
 
   useEffect(() => { void load(); }, []);
