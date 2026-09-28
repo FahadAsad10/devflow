@@ -8,6 +8,7 @@ import healthRoutes from "./routes/health.js";
 import projectRoutes from "./routes/projects.js";
 import taskRoutes from "./routes/tasks.js";
 import teamRoutes from "./routes/teams.js";
+import commentRoutes from "./routes/comments.js";
 import { errorHandler } from "./middleware/error.js";
 
 const app = express();
@@ -33,12 +34,13 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-app.use("/api", rateLimit({ windowMs: 15 * 60 * 1000, limit: 300 }));
+app.use("/api", rateLimit({ windowMs: 15 * 60 * 1000, limit: 300, standardHeaders: "draft-8", legacyHeaders: false }));
 app.use("/health", healthRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/teams", teamRoutes);
+app.use("/api/comments", commentRoutes);
 app.use(errorHandler);
 
 export default app;
