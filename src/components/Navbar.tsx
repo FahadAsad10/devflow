@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
@@ -6,6 +6,12 @@ function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [dark, setDark] = useState(() => localStorage.getItem("devflow-theme") === "dark");
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = dark ? "dark" : "light";
+    localStorage.setItem("devflow-theme", dark ? "dark" : "light");
+  }, [dark]);
 
   async function signOut() {
     await logout();
@@ -16,11 +22,14 @@ function Navbar() {
 
   return (
     <header className="topbar">
-      <div className="topbar-logo">DevFlow</div>
+      <button className="topbar-logo logo-button" type="button" onClick={() => navigate("/dashboard")} aria-label="Go to dashboard">DevFlow</button>
 
       <div className="topbar-user">
+        <button className="theme-toggle" type="button" onClick={() => setDark((value) => !value)} aria-label={dark ? "Switch to light mode" : "Switch to dark mode"} title={dark ? "Light mode" : "Dark mode"}>
+          {dark ? "☀" : "☾"}
+        </button>
         <span className="user-avatar" aria-hidden="true">{initial}</span>
-        <span>{user?.name ?? "User"}</span>
+        <span className="topbar-name">{user?.name ?? "User"}</span>
         <button className="button-secondary nav-logout" type="button" onClick={() => setOpen((value) => !value)} aria-expanded={open}>
           Account
         </button>
