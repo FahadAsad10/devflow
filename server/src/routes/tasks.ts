@@ -60,7 +60,8 @@ router.get("/project/:projectId", async (req: AuthRequest, res, next) => {
 
 router.post("/project/:projectId", async (req: AuthRequest, res, next) => {
   try {
-    const project = await accessibleProject(req.params.projectId, req.userId!);
+    const projectId = typeof req.params.projectId === "string" ? req.params.projectId : undefined;
+    const project = await accessibleProject(projectId, req.userId!);
     if (!project) return res.status(404).json({ message: "Project not found." });
 
     const input = taskSchema.parse(req.body);
@@ -97,7 +98,7 @@ router.delete("/:id", async (req: AuthRequest, res, next) => {
   try {
     const existing = await prisma.task.findFirst({
       where: {
-        id: req.params.id,
+        id: typeof req.params.id === "string" ? req.params.id : undefined,
         project: {
           OR: [{ ownerId: req.userId }, { memberships: { some: { userId: req.userId } } }],
         },
