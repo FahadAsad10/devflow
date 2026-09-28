@@ -954,3 +954,42 @@ button {
 .site-footer a { color: #4b5563; text-decoration: none; }
 .site-footer a:hover { color: #2563eb; }
 @media (max-width: 700px) { .site-footer { padding: 20px 18px; } }
+
+.auth-page {
+  min-height: calc(100vh - 72px);
+  display: grid;
+  place-items: center;
+  padding: 40px 20px;
+  background: #f5f7fb;
+}
+.auth-card {
+  width: min(440px, 100%);
+  padding: 32px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.07);
+}
+.auth-brand {
+  margin-bottom: 28px;
+  font-size: 22px;
+  font-weight: 800;
+}
+.auth-card h1 {
+  margin: 0;
+  font-size: 28px;
+}
+.auth-switch {
+  width: 100%;
+  margin-top: 18px;
+  padding: 8px;
+  border: 0;
+  background: transparent;
+  color: #2563eb;
+  font-size: 14px;
+  font-weight: 600;
+}
+.project-form button:disabled {
+  opacity: .6;
+  cursor: wait;
+}
