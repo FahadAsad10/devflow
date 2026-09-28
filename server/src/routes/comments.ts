@@ -17,7 +17,7 @@ async function accessibleProject(projectId: string | undefined, userId: string) 
       id: projectId,
       OR: [{ ownerId: userId }, { memberships: { some: { userId } } }],
     },
-    select: { id: true },
+    select: { id: true, name: true },
   });
 }
 
@@ -60,7 +60,7 @@ router.post("/project/:projectId", async (req: AuthRequest, res, next) => {
           projectId: project.id,
           type: "COMMENT",
           title: "New project comment",
-          message: comment.user.name + " commented on " + project.id + ".",
+          message: comment.user.name + " commented on " + project.name + ".",
         })),
       });
     }
