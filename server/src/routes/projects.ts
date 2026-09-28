@@ -59,8 +59,11 @@ router.post("/", async (req: AuthRequest, res, next) => {
 
 router.get("/:id", async (req: AuthRequest, res, next) => {
   try {
+    const projectId = typeof req.params.id === "string" ? req.params.id : undefined;
+    if (!projectId) return res.status(400).json({ message: "Project id is required." });
+
     const project = await prisma.project.findFirst({
-      where: { id: req.params.id, ...accessFilter(req.userId!) },
+      where: { id: projectId, ...accessFilter(req.userId!) },
       include: {
         tasks: true,
         memberships: { include: { user: { select: { id: true, name: true, email: true } } } },
