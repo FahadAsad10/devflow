@@ -11,6 +11,7 @@ import teamRoutes from "./routes/teams.js";
 import commentRoutes from "./routes/comments.js";
 import notificationRoutes from "./routes/notifications.js";
 import analyticsRoutes from "./routes/analytics.js";
+import attachmentRoutes from "./routes/attachments.js";
 import { errorHandler } from "./middleware/error.js";
 
 const app = express();
@@ -52,6 +53,7 @@ app.use("/api/teams", teamRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/analytics", analyticsRoutes);
+app.use("/api/attachments", attachmentRoutes);
 app.use(errorHandler);
 
 export default app;
