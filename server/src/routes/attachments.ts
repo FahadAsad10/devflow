@@ -2,6 +2,7 @@ import { Router } from "express";
 import fs from "node:fs/promises";
 import path from "node:path";
 import multer from "multer";
+import rateLimit from "express-rate-limit";
 import { prisma } from "../lib/prisma.js";
 import { requireAuth, type AuthRequest } from "../middleware/auth.js";
 
@@ -10,6 +11,8 @@ router.use(requireAuth);
 
 const uploadDir = path.resolve(process.env.UPLOAD_DIR ?? "./uploads");
 const allowedMimeTypes = new Set(["application/pdf","text/plain","text/csv","application/zip","application/json","image/jpeg","image/png","image/webp","image/gif"]);
+const uploadRateLimit = rateLimit({ windowMs: 60 * 60 * 1000, limit: 30, standardHeaders: "draft-8", legacyHeaders: false, message: { message: "Upload limit reached. Please try again later." } });
+
 const upload = multer({
   dest: uploadDir,
   limits: { fileSize: 10 * 1024 * 1024, files: 1 },
@@ -34,7 +37,7 @@ router.get("/project/:projectId", async (req: AuthRequest, res, next) => {
   } catch (error) { return next(error); }
 });
 
-router.post("/project/:projectId", upload.single("file"), async (req: AuthRequest, res, next) => {
+router.post("/project/:projectId", uploadRateLimit, upload.single("file"), async (req: AuthRequest, res, next) => {
   try {
     const projectId = typeof req.params.projectId === "string" ? req.params.projectId : undefined;
     const project = await accessibleProject(projectId, req.userId!);
