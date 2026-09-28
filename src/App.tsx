@@ -13,6 +13,8 @@ import PrivacyPage from "./pages/PrivacyPage";
 import TermsPage from "./pages/TermsPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import AuthPage from "./pages/AuthPage";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { AuthProvider } from "./context/AuthContext";
 import { trackPageView } from "./lib/analytics";
 
 function RouteMetadata() {
@@ -24,6 +26,7 @@ function RouteMetadata() {
       "/projects": "Projects | DevFlow",
       "/tasks": "Tasks | DevFlow",
       "/teams": "Teams | DevFlow",
+      "/login": "Sign in | DevFlow",
       "/privacy": "Privacy Policy | DevFlow",
       "/terms": "Terms & Conditions | DevFlow",
     };
@@ -35,7 +38,25 @@ function RouteMetadata() {
   return null;
 }
 
+function PrivateRoute({ children }: { children: React.ReactNode }) {
+  return <ProtectedRoute>{children}</ProtectedRoute>;
+}
+
 function AppLayout() {
+  const location = useLocation();
+  const isAuthPage = location.pathname === "/login";
+
+  if (isAuthPage) {
+    return (
+      <>
+        <RouteMetadata />
+        <Routes>
+          <Route path="/login" element={<AuthPage />} />
+        </Routes>
+      </>
+    );
+  }
+
   return (
     <div className="app">
       <RouteMetadata />
@@ -47,12 +68,11 @@ function AppLayout() {
         <main className="main-content">
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/login" element={<AuthPage />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/projects" element={<ProjectsPage />} />
-            <Route path="/projects/:id" element={<ProjectDetailsPage />} />
-            <Route path="/tasks" element={<TasksPage />} />
-            <Route path="/teams" element={<TeamsPage />} />
+            <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+            <Route path="/projects" element={<PrivateRoute><ProjectsPage /></PrivateRoute>} />
+            <Route path="/projects/:id" element={<PrivateRoute><ProjectDetailsPage /></PrivateRoute>} />
+            <Route path="/tasks" element={<PrivateRoute><TasksPage /></PrivateRoute>} />
+            <Route path="/teams" element={<PrivateRoute><TeamsPage /></PrivateRoute>} />
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/terms" element={<TermsPage />} />
             <Route path="*" element={<NotFoundPage />} />
@@ -69,7 +89,9 @@ function AppLayout() {
 function App() {
   return (
     <BrowserRouter>
-      <AppLayout />
+      <AuthProvider>
+        <AppLayout />
+      </AuthProvider>
     </BrowserRouter>
   );
 }
