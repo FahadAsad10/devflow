@@ -993,3 +993,208 @@ button {
   opacity: .6;
   cursor: wait;
 }
+
+.loading-page {
+  min-height: 60vh;
+  display: grid;
+  place-items: center;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.topbar-user { position: relative; }
+.nav-logout { min-height: 36px; padding: 7px 10px; }
+.account-menu {
+  position: absolute;
+  top: 48px;
+  right: 0;
+  z-index: 30;
+  width: 230px;
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 12px 30px rgba(0,0,0,.12);
+}
+.account-menu > span {
+  overflow: hidden;
+  color: #6b7280;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.task-create-form {
+  display: grid;
+  grid-template-columns: 180px minmax(180px, 1fr) minmax(180px, 1fr) auto;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.task-create-form input,
+.task-create-form select,
+.task-card select,
+.task-mini-card select {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 10px 11px;
+  background: #fff;
+  color: #111827;
+}
+.task-create-form input:focus,
+.task-create-form select:focus,
+.task-card select:focus,
+.task-mini-card select:focus {
+  border-color: #2563eb;
+  outline: none;
+  box-shadow: 0 0 0 3px #dbeafe;
+}
+
+.kanban-preview {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.kanban-column {
+  min-width: 0;
+  padding: 16px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+}
+.kanban-column-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.kanban-column-header h2 {
+  margin: 0;
+  font-size: 16px;
+}
+.kanban-column-header span,
+.column-count {
+  display: inline-flex;
+  min-width: 24px;
+  justify-content: center;
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  color: #4b5563;
+  font-size: 12px;
+  font-weight: 700;
+}
+.empty-column {
+  margin: 0;
+  padding: 28px 8px;
+  color: #9ca3af;
+  text-align: center;
+  font-size: 13px;
+}
+.task-card,
+.task-mini-card {
+  padding: 14px;
+  margin-bottom: 10px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.04);
+}
+.task-card:last-child { margin-bottom: 0; }
+.task-card-title {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+.task-card p,
+.task-mini-card p {
+  margin: 8px 0;
+  color: #6b7280;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.task-delete {
+  border: 0;
+  background: transparent;
+  color: #9ca3af;
+  font-size: 20px;
+  line-height: 1;
+}
+.task-delete:hover { color: #dc2626; }
+.task-project {
+  display: block;
+  margin: 8px 0 10px;
+  color: #2563eb;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+.task-mini-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.task-mini-list h3 {
+  margin: 0 0 10px;
+  font-size: 14px;
+}
+.task-mini-card strong {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.team-card {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 20px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+}
+.team-avatar {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #eff6ff;
+  color: #2563eb;
+  font-weight: 800;
+}
+.team-card h2 {
+  margin: 0 0 4px;
+  font-size: 17px;
+}
+.team-card p {
+  margin: 0 0 10px;
+  color: #6b7280;
+  font-size: 13px;
+}
+.team-card small {
+  display: block;
+  margin-top: 10px;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+@media (max-width: 900px) {
+  .task-create-form { grid-template-columns: 1fr 1fr; }
+  .kanban-preview,
+  .task-mini-list,
+  .team-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .task-create-form { grid-template-columns: 1fr; }
+  .account-menu { right: -10px; }
+}
