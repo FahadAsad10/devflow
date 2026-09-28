@@ -1,4 +1,5 @@
-import { FormEvent, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+import type { FormEvent } from "react";
 import { Link } from "react-router-dom";
 import type { Project, ProjectStatus } from "../types/project";
 import { initialProjects } from "../data/projects";
