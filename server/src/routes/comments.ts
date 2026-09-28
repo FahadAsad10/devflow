@@ -49,6 +49,21 @@ router.post("/project/:projectId", async (req: AuthRequest, res, next) => {
       data: { body: input.body, projectId: project.id, userId: req.userId! },
       include: { user: { select: { id: true, name: true } } },
     });
+    const members = await prisma.membership.findMany({
+      where: { projectId: project.id, userId: { not: req.userId! } },
+      select: { userId: true },
+    });
+    if (members.length) {
+      await prisma.notification.createMany({
+        data: members.map((member) => ({
+          userId: member.userId,
+          projectId: project.id,
+          type: "COMMENT",
+          title: "New project comment",
+          message: comment.user.name + " commented on " + project.id + ".",
+        })),
+      });
+    }
     return res.status(201).json({ comment });
   } catch (error) {
     return next(error);
