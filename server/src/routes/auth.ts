@@ -4,8 +4,17 @@ import jwt from "jsonwebtoken";
 import { z } from "zod";
 import { prisma } from "../lib/prisma.js";
 import { requireAuth, type AuthRequest } from "../middleware/auth.js";
+import rateLimit from "express-rate-limit";
 
 const router = Router();
+
+const authRateLimit = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 10,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  message: { message: "Too many authentication attempts. Please try again later." },
+});
 
 const registerSchema = z.object({
   email: z.string().trim().toLowerCase().email(),
@@ -32,7 +41,7 @@ function setAuthCookie(res: Response, userId: string) {
   });
 }
 
-router.post("/register", async (req, res, next) => {
+router.post("/register", authRateLimit, async (req, res, next) => {
   try {
     const input = registerSchema.parse(req.body);
     const existing = await prisma.user.findUnique({ where: { email: input.email } });
@@ -51,7 +60,7 @@ router.post("/register", async (req, res, next) => {
   }
 });
 
-router.post("/login", async (req, res, next) => {
+router.post("/login", authRateLimit, async (req, res, next) => {
   try {
     const input = loginSchema.parse(req.body);
     const user = await prisma.user.findUnique({ where: { email: input.email } });
