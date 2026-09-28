@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import { ZodError } from "zod";
+import multer from "multer";
 
 export function errorHandler(
   error: unknown,
@@ -7,6 +8,10 @@ export function errorHandler(
   res: Response,
   _next: NextFunction,
 ) {
+  if (error instanceof multer.MulterError) {
+    return res.status(400).json({ message: error.code === "LIMIT_FILE_SIZE" ? "File is too large. Maximum size is 10 MB." : "File upload failed." });
+  }
+
   if (error instanceof ZodError) {
     return res.status(400).json({
       message: "Validation failed.",
