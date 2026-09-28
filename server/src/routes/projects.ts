@@ -1,0 +1,67 @@
+import { Router } from "express";
+import { z } from "zod";
+import { prisma } from "../lib/prisma.js";
+import { requireAuth, type AuthRequest } from "../middleware/auth.js";
+
+const router = Router();
+router.use(requireAuth);
+
+const projectSchema = z.object({
+  name: z.string().trim().min(3).max(120),
+  description: z.string().trim().min(10).max(2000),
+  status: z.enum(["PLANNING", "ACTIVE", "COMPLETED"]).default("PLANNING"),
+  dueDate: z.string().date().optional(),
+});
+
+router.get("/", async (req: AuthRequest, res, next) => {
+  try {
+    const projects = await prisma.project.findMany({
+      where: { OR: [{ ownerId: req.userId }, { memberships: { some: { userId: req.userId } } }] },
+      include: { _count: { select: { tasks: true, memberships: true } } },
+      orderBy: { createdAt: "desc" },
+    });
+    return res.json({ projects });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+router.post("/", async (req: AuthRequest, res, next) => {
+  try {
+    const input = projectSchema.parse(req.body);
+    const project = await prisma.project.create({
+      data: {
+        name: input.name,
+        description: input.description,
+        status: input.status,
+        dueDate: input.dueDate ? new Date(input.dueDate) : undefined,
+        ownerId: req.userId!,
+        memberships: { create: { userId: req.userId!, role: "OWNER" } },
+      },
+    });
+    return res.status(201).json({ project });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+router.get("/:id", async (req: AuthRequest, res, next) => {
+  try {
+    const project = await prisma.project.findFirst({
+      where: {
+        id: req.params.id,
+        OR: [{ ownerId: req.userId }, { memberships: { some: { userId: req.userId } } }],
+      },
+      include: {
+        tasks: true,
+        memberships: { include: { user: { select: { id: true, name: true, email: true } } } },
+      },
+    });
+    if (!project) return res.status(404).json({ message: "Project not found." });
+    return res.json({ project });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+export default router;
