@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { api, type ApiComment, type ApiProject, type ApiTask } from "../lib/api";
+import { api, type ApiAttachment, type ApiComment, type ApiProject, type ApiTask } from "../lib/api";
 import { useAuth } from "../context/AuthContext";
 
 const statusLabel: Record<ApiTask["status"], string> = {
@@ -16,6 +16,9 @@ function ProjectDetailsPage() {
   const [project, setProject] = useState<ApiProject | null>(null);
   const [tasks, setTasks] = useState<ApiTask[]>([]);
   const [comments, setComments] = useState<ApiComment[]>([]);
+  const [attachments, setAttachments] = useState<ApiAttachment[]>([]);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [editing, setEditing] = useState(false);
@@ -24,6 +27,7 @@ function ProjectDetailsPage() {
   const [commentSaving, setCommentSaving] = useState(false);
   const [taskTitle, setTaskTitle] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
+  const [taskAssigneeId, setTaskAssigneeId] = useState("");
   const [taskSaving, setTaskSaving] = useState(false);
 
   async function load() {
@@ -35,10 +39,12 @@ function ProjectDetailsPage() {
         api.project(id),
         api.projectTasks(id),
         api.comments(id),
+        api.attachments(id),
       ]);
       setProject(projectResponse.project);
       setTasks(taskResponse.tasks);
       setComments(commentResponse.comments);
+      setAttachments(attachmentResponse.attachments);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to load project.");
     } finally {
