@@ -22,13 +22,33 @@ services:
       NODE_ENV: development
       PORT: 4000
       DATABASE_URL: postgresql://postgres:postgres@db:5432/devflow?schema=public
-      JWT_SECRET: change-this-to-a-long-random-secret
-      FRONTEND_URL: http://localhost:5174
+      JWT_SECRET: change-this-to-a-long-random-secret-of-at-least-32-characters
+      FRONTEND_URL: http://localhost:8080,http://localhost:5174
+      UPLOAD_DIR: /app/uploads
     ports:
       - "4000:4000"
+    volumes:
+      - devflow-uploads:/app/uploads
     depends_on:
       db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  frontend:
+    build:
+      context: .
+      args:
+        VITE_API_URL: http://localhost:4000
+    ports:
+      - "8080:80"
+    depends_on:
+      api:
         condition: service_healthy
 
 volumes:
   devflow-db:
+  devflow-uploads:
