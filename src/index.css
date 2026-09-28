@@ -1198,3 +1198,222 @@ button {
   .task-create-form { grid-template-columns: 1fr; }
   .account-menu { right: -10px; }
 }
+
+
+/* =========================
+   THEME + INTERACTION POLISH
+========================= */
+.logo-button {
+  border: 0;
+  background: transparent;
+  padding: 0;
+}
+.theme-toggle {
+  width: 36px;
+  height: 36px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff;
+  color: #374151;
+  font-size: 18px;
+}
+.theme-toggle:hover { background: #f9fafb; }
+.detail-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.button-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 10px 16px;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  background: #fff;
+  color: #b91c1c;
+  font-size: 14px;
+  font-weight: 600;
+}
+.button-danger:hover { background: #fef2f2; }
+.task-inline-form {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) minmax(180px, 1.5fr) auto;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.task-inline-form input,
+.comment-form textarea {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 11px 12px;
+  background: #fff;
+  color: #111827;
+}
+.task-inline-form input:focus,
+.comment-form textarea:focus {
+  border-color: #2563eb;
+  outline: none;
+  box-shadow: 0 0 0 3px #dbeafe;
+}
+.project-edit-form { margin-bottom: 24px; }
+.comments-panel { margin-top: 24px; }
+.comment-form {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.comment-form textarea { resize: vertical; }
+.comment-form-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #9ca3af;
+  font-size: 12px;
+}
+.comment-list { display: grid; gap: 14px; }
+.comment-card {
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #f9fafb;
+}
+.comment-avatar,
+.team-avatar {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-weight: 700;
+}
+.comment-content { min-width: 0; flex: 1; }
+.comment-header {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.comment-header time {
+  color: #9ca3af;
+  font-size: 12px;
+}
+.comment-content p {
+  margin: 7px 0 6px;
+  color: #374151;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.comment-delete {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #9ca3af;
+  font-size: 12px;
+}
+.comment-delete:hover { color: #dc2626; }
+.empty-comment {
+  margin: 0;
+  padding: 20px;
+  border: 1px dashed #d1d5db;
+  border-radius: 8px;
+  color: #6b7280;
+  text-align: center;
+}
+html[data-theme="dark"] body {
+  background: #0b1120;
+  color: #e5e7eb;
+}
+html[data-theme="dark"] .topbar,
+html[data-theme="dark"] .site-footer,
+html[data-theme="dark"] .stat-card,
+html[data-theme="dark"] .project-card,
+html[data-theme="dark"] .project-list-card,
+html[data-theme="dark"] .detail-card,
+html[data-theme="dark"] .detail-panel,
+html[data-theme="dark"] .modal,
+html[data-theme="dark"] .auth-card,
+html[data-theme="dark"] .cookie-banner {
+  background: #111827;
+  border-color: #263244;
+  color: #e5e7eb;
+}
+html[data-theme="dark"] .topbar-logo,
+html[data-theme="dark"] .dashboard-header h1,
+html[data-theme="dark"] .section-header h2,
+html[data-theme="dark"] .project-card h3,
+html[data-theme="dark"] .project-list-card h2,
+html[data-theme="dark"] .page h1,
+html[data-theme="dark"] .legal-page h1,
+html[data-theme="dark"] .detail-card strong,
+html[data-theme="dark"] .modal-header h2,
+html[data-theme="dark"] .auth-card h1,
+html[data-theme="dark"] .auth-brand,
+html[data-theme="dark"] .team-card h2,
+html[data-theme="dark"] .comment-header strong {
+  color: #f9fafb;
+}
+html[data-theme="dark"] .dashboard-description,
+html[data-theme="dark"] .section-header p,
+html[data-theme="dark"] .project-card p,
+html[data-theme="dark"] .project-list-card p,
+html[data-theme="dark"] .page-description,
+html[data-theme="dark"] .detail-panel p,
+html[data-theme="dark"] .detail-card span,
+html[data-theme="dark"] .detail-card small,
+html[data-theme="dark"] .cookie-banner p,
+html[data-theme="dark"] .site-footer,
+html[data-theme="dark"] .team-card p,
+html[data-theme="dark"] .team-card small,
+html[data-theme="dark"] .comment-content p {
+  color: #9ca3af;
+}
+html[data-theme="dark"] .button-secondary,
+html[data-theme="dark"] .theme-toggle,
+html[data-theme="dark"] .icon-button,
+html[data-theme="dark"] .account-menu,
+html[data-theme="dark"] .search-box input,
+html[data-theme="dark"] .project-form input,
+html[data-theme="dark"] .project-form textarea,
+html[data-theme="dark"] .project-form select,
+html[data-theme="dark"] .task-create-form input,
+html[data-theme="dark"] .task-create-form select,
+html[data-theme="dark"] .task-card select,
+html[data-theme="dark"] .task-mini-card select,
+html[data-theme="dark"] .task-inline-form input,
+html[data-theme="dark"] .comment-form textarea {
+  background: #0f172a;
+  border-color: #334155;
+  color: #e5e7eb;
+}
+html[data-theme="dark"] .kanban-column,
+html[data-theme="dark"] .comment-card,
+html[data-theme="dark"] .empty-state {
+  background: #0f172a;
+  border-color: #263244;
+}
+html[data-theme="dark"] .task-card,
+html[data-theme="dark"] .task-mini-card {
+  background: #111827;
+  border-color: #263244;
+}
+html[data-theme="dark"] .progress-track { background: #334155; }
+html[data-theme="dark"] .account-menu > span { color: #9ca3af; }
+html[data-theme="dark"] .site-footer { border-color: #263244; }
+html[data-theme="dark"] .auth-page { background: #0b1120; }
+html[data-theme="dark"] .topbar-user { color: #d1d5db; }
+html[data-theme="dark"] .comment-card { background: #0f172a; }
+
+@media (max-width: 700px) {
+  .topbar-name { display: none; }
+  .task-inline-form { grid-template-columns: 1fr; }
+  .detail-actions { width: 100%; }
+}
