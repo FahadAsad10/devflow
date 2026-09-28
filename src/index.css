@@ -1680,3 +1680,6 @@ html[data-theme="dark"] .member-management-row {
   .member-management-row select,
   .member-management-row .button-danger { grid-column: 2 / -1; }
 }
+
+.task-assignee { display: block; margin: 8px 0; color: #2563eb; font-size: 11px; font-weight: 700; }
+html[data-theme="dark"] .task-assignee { color: #60a5fa; }
