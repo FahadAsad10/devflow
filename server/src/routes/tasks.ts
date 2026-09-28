@@ -12,7 +12,7 @@ const taskSchema = z.object({
   status: z.enum(["TODO", "IN_PROGRESS", "DONE"]).default("TODO"),
 });
 
-const taskUpdateSchema = taskSchema.partial();
+const taskUpdateSchema = taskSchema.partial().refine((value) => Object.keys(value).length > 0, { message: "At least one field is required." });
 
 async function accessibleProject(projectId: string | undefined, userId: string) {
   if (!projectId) return null;
