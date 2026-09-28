@@ -7,6 +7,12 @@ export type User = {
   createdAt?: string;
 };
 
+export type DashboardAnalytics = {
+  projects: { total: number; planning: number; active: number; completed: number; overdue: number };
+  tasks: { total: number; todo: number; inProgress: number; done: number; completionRate: number };
+  teamMembers: number;
+};
+
 export type ApiProject = {
   id: string;
   name: string;
@@ -100,6 +106,7 @@ export const api = {
   logout: () => request<void>("/api/auth/logout", { method: "POST" }),
   me: () => request<{ user: User }>("/api/auth/me"),
   projects: () => request<{ projects: ApiProject[] }>("/api/projects"),
+  analytics: () => request<DashboardAnalytics>("/api/analytics"),
   project: (id: string) => request<{ project: ApiProject }>(`/api/projects/${id}`),
   createProject: (input: { name: string; description: string; status: ApiProject["status"]; dueDate?: string }) =>
     request<{ project: ApiProject }>("/api/projects", { method: "POST", body: JSON.stringify(input) }),
