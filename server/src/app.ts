@@ -6,6 +6,8 @@ import rateLimit from "express-rate-limit";
 import authRoutes from "./routes/auth.js";
 import healthRoutes from "./routes/health.js";
 import projectRoutes from "./routes/projects.js";
+import taskRoutes from "./routes/tasks.js";
+import teamRoutes from "./routes/teams.js";
 import { errorHandler } from "./middleware/error.js";
 
 const app = express();
@@ -35,6 +37,8 @@ app.use("/api", rateLimit({ windowMs: 15 * 60 * 1000, limit: 300 }));
 app.use("/health", healthRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/projects", projectRoutes);
+app.use("/api/tasks", taskRoutes);
+app.use("/api/teams", teamRoutes);
 app.use(errorHandler);
 
 export default app;
