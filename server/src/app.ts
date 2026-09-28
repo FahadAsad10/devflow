@@ -9,6 +9,7 @@ import projectRoutes from "./routes/projects.js";
 import taskRoutes from "./routes/tasks.js";
 import teamRoutes from "./routes/teams.js";
 import commentRoutes from "./routes/comments.js";
+import notificationRoutes from "./routes/notifications.js";
 import { errorHandler } from "./middleware/error.js";
 
 const app = express();
@@ -48,6 +49,7 @@ app.use("/api/projects", projectRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/teams", teamRoutes);
 app.use("/api/comments", commentRoutes);
+app.use("/api/notifications", notificationRoutes);
 app.use(errorHandler);
 
 export default app;
