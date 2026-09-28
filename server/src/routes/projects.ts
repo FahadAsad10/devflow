@@ -13,11 +13,19 @@ const projectSchema = z.object({
   dueDate: z.string().date().optional(),
 });
 
+const accessFilter = (userId: string) => ({
+  OR: [{ ownerId: userId }, { memberships: { some: { userId } } }],
+});
+
 router.get("/", async (req: AuthRequest, res, next) => {
   try {
     const projects = await prisma.project.findMany({
-      where: { OR: [{ ownerId: req.userId }, { memberships: { some: { userId: req.userId } } }] },
-      include: { _count: { select: { tasks: true, memberships: true } } },
+      where: accessFilter(req.userId!),
+      include: {
+        _count: { select: { tasks: true, memberships: true } },
+        tasks: { select: { status: true } },
+        memberships: { select: { user: { select: { id: true } }, role: true } },
+      },
       orderBy: { createdAt: "desc" },
     });
     return res.json({ projects });
@@ -38,6 +46,10 @@ router.post("/", async (req: AuthRequest, res, next) => {
         ownerId: req.userId!,
         memberships: { create: { userId: req.userId!, role: "OWNER" } },
       },
+      include: {
+        _count: { select: { tasks: true, memberships: true } },
+        tasks: { select: { status: true } },
+      },
     });
     return res.status(201).json({ project });
   } catch (error) {
@@ -48,10 +60,7 @@ router.post("/", async (req: AuthRequest, res, next) => {
 router.get("/:id", async (req: AuthRequest, res, next) => {
   try {
     const project = await prisma.project.findFirst({
-      where: {
-        id: req.params.id,
-        OR: [{ ownerId: req.userId }, { memberships: { some: { userId: req.userId } } }],
-      },
+      where: { id: req.params.id, ...accessFilter(req.userId!) },
       include: {
         tasks: true,
         memberships: { include: { user: { select: { id: true, name: true, email: true } } } },
