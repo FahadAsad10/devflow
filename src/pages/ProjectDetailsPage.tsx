@@ -31,7 +31,7 @@ function ProjectDetailsPage() {
     setLoading(true);
     setError("");
     try {
-      const [projectResponse, taskResponse, commentResponse] = await Promise.all([
+      const [projectResponse, taskResponse, commentResponse, attachmentResponse] = await Promise.all([
         api.project(id),
         api.projectTasks(id),
         api.comments(id),
@@ -73,10 +73,12 @@ function ProjectDetailsPage() {
       const response = await api.createTask(id, {
         title: taskTitle.trim(),
         description: taskDescription.trim() || undefined,
+        assigneeId: taskAssigneeId || null,
       });
       setTasks((current) => [...current, response.task]);
       setTaskTitle("");
       setTaskDescription("");
+      setTaskAssigneeId("");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to create task.");
     } finally {
