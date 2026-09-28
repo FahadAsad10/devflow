@@ -938,3 +938,19 @@ button {
     justify-content: flex-end;
   }
 }
+
+.site-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px 40px;
+  border-top: 1px solid #e5e7eb;
+  background: #fff;
+  color: #6b7280;
+  font-size: 13px;
+}
+.site-footer nav { display: flex; gap: 18px; }
+.site-footer a { color: #4b5563; text-decoration: none; }
+.site-footer a:hover { color: #2563eb; }
+@media (max-width: 700px) { .site-footer { padding: 20px 18px; } }
