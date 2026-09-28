@@ -12,6 +12,7 @@ import TeamsPage from "./pages/TeamsPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import TermsPage from "./pages/TermsPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import AuthPage from "./pages/AuthPage";
 import { trackPageView } from "./lib/analytics";
 
 function RouteMetadata() {
@@ -46,6 +47,7 @@ function AppLayout() {
         <main className="main-content">
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/login" element={<AuthPage />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/projects" element={<ProjectsPage />} />
             <Route path="/projects/:id" element={<ProjectDetailsPage />} />
