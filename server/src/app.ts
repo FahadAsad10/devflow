@@ -17,8 +17,15 @@ app.disable("x-powered-by");
 app.set("trust proxy", 1);
 
 app.use(helmet());
+const allowedOrigins = new Set(
+  (process.env.FRONTEND_URL ?? "http://localhost:5174").split(",").map((origin) => origin.trim()).filter(Boolean),
+);
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL ?? "http://localhost:5174",
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.has(origin)) return callback(null, true);
+    return callback(new Error("Origin is not allowed by CORS."));
+  },
   credentials: true,
 }));
 app.use(express.json({ limit: "100kb" }));
