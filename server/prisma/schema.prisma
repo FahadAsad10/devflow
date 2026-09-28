@@ -35,6 +35,9 @@ model User {
   memberships  Membership[]
   projects     Project[]    @relation("ProjectOwner")
   comments     Comment[]
+  notifications Notification[]
+  sentInvitations TeamInvitation[] @relation("InvitationSender")
+  receivedInvitations TeamInvitation[] @relation("InvitationRecipient")
 }
 
 model Project {
@@ -48,6 +51,8 @@ model Project {
   tasks       Task[]
   memberships Membership[]
   comments    Comment[]
+  notifications Notification[]
+  invitations TeamInvitation[]
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 }
@@ -82,4 +87,40 @@ model Comment {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
+}
+
+
+model Notification {
+  id        String   @id @default(cuid())
+  type      String
+  title     String
+  message   String
+  read      Boolean  @default(false)
+  userId    String
+  projectId String?
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@index([userId, read])
+  @@index([userId, createdAt])
+}
+
+model TeamInvitation {
+  id          String     @id @default(cuid())
+  email       String
+  role        MemberRole @default(MEMBER)
+  token       String     @unique
+  status      String     @default("PENDING")
+  projectId   String
+  senderId    String
+  recipientId String?
+  project     Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  sender      User       @relation("InvitationSender", fields: [senderId], references: [id], onDelete: Cascade)
+  recipient   User?      @relation("InvitationRecipient", fields: [recipientId], references: [id], onDelete: SetNull)
+  createdAt   DateTime   @default(now())
+  expiresAt   DateTime
+
+  @@index([email, status])
+  @@index([projectId, status])
 }
