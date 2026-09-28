@@ -8,10 +8,13 @@ DevFlow is a full-stack developer project management SaaS built with React, Type
 - Protected React routes and persistent PostgreSQL data
 - Project creation, editing, deletion, status and due dates
 - Task creation, status workflow and deletion
+- Team invitations, project roles and member management
 - Team membership visibility
-- Project discussions/comments with ownership-aware deletion
+- Project discussions/comments with ownership-aware deletion and collaborator notifications
 - Search and filtering for projects
-- Dashboard statistics and project progress
+- Dashboard statistics, task completion analytics and overdue project tracking
+- Task assignment with collaborator notifications
+- Private project file attachments (10 MB limit in local storage)
 - Responsive layouts with keyboard focus states and accessible labels
 - Dark/light theme preference persisted locally
 - Privacy, Terms, cookie consent, 404 handling, favicon and SEO/Open Graph metadata
@@ -53,10 +56,10 @@ For local development, make sure `FRONTEND_URL` matches the Vite URL. Multiple c
 From the repository root:
 
 ```bash
-docker compose up -d db
+docker compose up -d
 ```
 
-The database is available at `localhost:5432` with the development credentials in `docker-compose.yml`.
+The full local stack is available with the frontend at `localhost:8080`, API at `localhost:4000`, and PostgreSQL at `localhost:5432`. Uploaded files are stored in the Docker `devflow-uploads` volume.
 
 ## Production checklist
 
@@ -69,7 +72,9 @@ Before deployment:
 5. Replace `devflow.example.com` in metadata, sitemap and robots.txt with the real domain.
 6. Review Privacy and Terms templates with the requirements of the jurisdiction where the service operates.
 7. Use managed PostgreSQL or a protected private database network.
-8. Add backups, monitoring and error tracking before serving real users.
+8. Configure object storage (S3-compatible storage or equivalent) instead of local uploads for multi-instance production deployments.
+9. Add backups, monitoring and error tracking before serving real users.
+10. Review allowed upload MIME types and size limits for your deployment.
 
 ## Project structure
 
