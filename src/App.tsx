@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-route
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 import CookieBanner from "./components/CookieBanner";
+import Footer from "./components/Footer";
 import Dashboard from "./components/Dashboard";
 import ProjectsPage from "./pages/ProjectsPage";
 import ProjectDetailsPage from "./pages/ProjectDetailsPage";
@@ -58,6 +59,7 @@ function AppLayout() {
       </div>
 
       <CookieBanner />
+      <Footer />
     </div>
   );
 }
