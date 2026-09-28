@@ -280,6 +280,7 @@ function ProjectDetailsPage() {
                   <article className="task-mini-card" key={task.id}>
                     <strong>{task.title}</strong>
                     {task.description && <p>{task.description}</p>}
+                    <span className="task-assignee">{task.assignee ? `Assigned to ${task.assignee.name}` : "Unassigned"}</span>
                     <select aria-label={`Status for ${task.title}`} value={task.status} onChange={(event) => void moveTask(task, event.target.value as ApiTask["status"])}>
                       <option value="TODO">To Do</option>
                       <option value="IN_PROGRESS">In Progress</option>
