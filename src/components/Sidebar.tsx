@@ -1,13 +1,13 @@
 function Sidebar() {
   return (
-    <aside>
-      <h2>DevFlow</h2>
+    <aside className="sidebar">
+      <div className="sidebar-logo">DevFlow</div>
 
-      <nav>
-        <a href="#">Dashboard</a>
-        <a href="#">Projects</a>
-        <a href="#">Tasks</a>
-        <a href="#">Teams</a>
+      <nav className="sidebar-nav">
+        <a href="#" className="sidebar-link active">Dashboard</a>
+        <a href="#" className="sidebar-link">Projects</a>
+        <a href="#" className="sidebar-link">Tasks</a>
+        <a href="#" className="sidebar-link">Teams</a>
       </nav>
     </aside>
   );
