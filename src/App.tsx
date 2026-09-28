@@ -4,13 +4,13 @@ import Dashboard from "./components/Dashboard";
 
 function App() {
   return (
-    <div>
+    <div className="app">
       <Navbar />
 
       <div className="app-layout">
         <Sidebar />
 
-        <main>
+        <main className="main-content">
           <Dashboard />
         </main>
       </div>
