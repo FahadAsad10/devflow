@@ -1,15 +1,23 @@
 import { useState, type FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { api } from "../lib/api";
+import { useAuth } from "../context/AuthContext";
 
 function AuthPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { user, refresh } = useAuth();
   const [mode, setMode] = useState<"login" | "register">("login");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  if (user) {
+    navigate("/dashboard", { replace: true });
+    return null;
+  }
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -27,11 +35,13 @@ function AuthPage() {
     setLoading(true);
     try {
       if (mode === "register") {
-        await api.register({ name: name.trim(), email, password });
+        await api.register({ name: name.trim(), email: email.trim(), password });
       } else {
-        await api.login({ email, password });
+        await api.login({ email: email.trim(), password });
       }
-      navigate("/dashboard");
+      await refresh();
+      const from = (location.state as { from?: string } | null)?.from;
+      navigate(from && from !== "/login" ? from : "/dashboard", { replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Authentication failed.");
     } finally {
@@ -61,7 +71,7 @@ function AuthPage() {
           </button>
         </form>
 
-        <button className="auth-switch" onClick={() => { setMode(mode === "login" ? "register" : "login"); setError(""); }}>
+        <button className="auth-switch" type="button" onClick={() => { setMode(mode === "login" ? "register" : "login"); setError(""); }}>
           {mode === "login" ? "Need an account? Create one" : "Already have an account? Sign in"}
         </button>
       </div>
