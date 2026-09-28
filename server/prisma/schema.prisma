@@ -38,6 +38,8 @@ model User {
   notifications Notification[]
   sentInvitations TeamInvitation[] @relation("InvitationSender")
   receivedInvitations TeamInvitation[] @relation("InvitationRecipient")
+  assignedTasks Task[] @relation("TaskAssignee")
+  attachments Attachment[] @relation("AttachmentUploader")
 }
 
 model Project {
@@ -53,6 +55,7 @@ model Project {
   comments    Comment[]
   notifications Notification[]
   invitations TeamInvitation[]
+  attachments Attachment[]
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 }
@@ -75,6 +78,9 @@ model Task {
   status      TaskStatus @default(TODO)
   projectId   String
   project     Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  assigneeId  String?
+  assignee    User?      @relation("TaskAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
+  attachments Attachment[]
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 }
@@ -123,4 +129,23 @@ model TeamInvitation {
 
   @@index([email, status])
   @@index([projectId, status])
+}
+
+
+model Attachment {
+  id           String   @id @default(cuid())
+  filename     String
+  storedName   String   @unique
+  mimeType     String
+  size         Int
+  projectId    String
+  uploaderId   String
+  taskId       String?
+  project      Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  uploader     User     @relation("AttachmentUploader", fields: [uploaderId], references: [id], onDelete: Cascade)
+  task         Task?    @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now())
+
+  @@index([projectId, createdAt])
+  @@index([taskId])
 }
