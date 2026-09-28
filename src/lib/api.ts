@@ -45,6 +45,26 @@ export type ProjectMember = {
   user: { id: string; name: string; email: string };
 };
 
+export type ApiNotification = {
+  id: string;
+  type: string;
+  title: string;
+  message: string;
+  read: boolean;
+  createdAt: string;
+  project?: { id: string; name: string } | null;
+};
+
+export type TeamInvitation = {
+  id: string;
+  email: string;
+  role: "OWNER" | "ADMIN" | "MEMBER";
+  status: string;
+  expiresAt: string;
+  project: { id: string; name: string };
+  sender: { name: string };
+};
+
 export type TeamMember = {
   id: string;
   name: string;
@@ -94,6 +114,16 @@ export const api = {
     request<{ task: ApiTask }>(`/api/tasks/${id}`, { method: "PATCH", body: JSON.stringify(input) }),
   deleteTask: (id: string) => request<void>(`/api/tasks/${id}`, { method: "DELETE" }),
   teams: () => request<{ members: TeamMember[] }>("/api/teams"),
+  inviteMember: (projectId: string, input: { email: string; role: "ADMIN" | "MEMBER" }) =>
+    request<{ invitation: { id: string; email: string; role: string; status: string; expiresAt: string } }>(`/api/teams/projects/${projectId}/invitations`, { method: "POST", body: JSON.stringify(input) }),
+  invitations: () => request<{ invitations: TeamInvitation[] }>("/api/teams/invitations"),
+  acceptInvitation: (id: string) => request<{ message: string }>(`/api/teams/invitations/${id}/accept`, { method: "POST" }),
+  updateMemberRole: (projectId: string, userId: string, role: "ADMIN" | "MEMBER") =>
+    request<{ message: string }>(`/api/teams/projects/${projectId}/members/${userId}`, { method: "PATCH", body: JSON.stringify({ role }) }),
+  removeMember: (projectId: string, userId: string) => request<void>(`/api/teams/projects/${projectId}/members/${userId}`, { method: "DELETE" }),
+  notifications: () => request<{ notifications: ApiNotification[] }>("/api/notifications"),
+  markNotificationRead: (id: string) => request<void>(`/api/notifications/${id}/read`, { method: "PATCH" }),
+  markAllNotificationsRead: () => request<void>("/api/notifications/read-all", { method: "POST" }),
   comments: (projectId: string) => request<{ comments: ApiComment[] }>(`/api/comments/project/${projectId}`),
   createComment: (projectId: string, body: string) =>
     request<{ comment: ApiComment }>(`/api/comments/project/${projectId}`, { method: "POST", body: JSON.stringify({ body }) }),
