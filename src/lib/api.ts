@@ -36,6 +36,19 @@ export type ApiTask = {
   createdAt: string;
   updatedAt: string;
   project?: { id: string; name: string };
+  assignee?: { id: string; name: string; email: string } | null;
+  assigneeId?: string | null;
+};
+
+export type ApiAttachment = {
+  id: string;
+  filename: string;
+  mimeType: string;
+  size: number;
+  projectId: string;
+  uploaderId: string;
+  createdAt: string;
+  uploader: { id: string; name: string };
 };
 
 export type ApiComment = {
@@ -115,11 +128,21 @@ export const api = {
   deleteProject: (id: string) => request<void>(`/api/projects/${id}`, { method: "DELETE" }),
   tasks: () => request<{ tasks: ApiTask[] }>("/api/tasks"),
   projectTasks: (projectId: string) => request<{ tasks: ApiTask[] }>(`/api/tasks/project/${projectId}`),
-  createTask: (projectId: string, input: { title: string; description?: string; status?: ApiTask["status"] }) =>
+  createTask: (projectId: string, input: { title: string; description?: string; status?: ApiTask["status"]; assigneeId?: string | null }) =>
     request<{ task: ApiTask }>(`/api/tasks/project/${projectId}`, { method: "POST", body: JSON.stringify(input) }),
-  updateTask: (id: string, input: Partial<Pick<ApiTask, "title" | "description" | "status">>) =>
+  updateTask: (id: string, input: Partial<Pick<ApiTask, "title" | "description" | "status" | "assigneeId">>) =>
     request<{ task: ApiTask }>(`/api/tasks/${id}`, { method: "PATCH", body: JSON.stringify(input) }),
   deleteTask: (id: string) => request<void>(`/api/tasks/${id}`, { method: "DELETE" }),
+  attachments: (projectId: string) => request<{ attachments: ApiAttachment[] }>(`/api/attachments/project/${projectId}`),
+  uploadAttachment: async (projectId: string, file: File) => {
+    const form = new FormData();
+    form.append("file", file);
+    const response = await fetch(`${API_URL}/api/attachments/project/${projectId}`, { method: "POST", credentials: "include", body: form });
+    if (!response.ok) { const body = await response.json().catch(() => ({ message: "Upload failed." })); throw new Error(body.message ?? "Upload failed."); }
+    return response.json() as Promise<{ attachment: ApiAttachment }>;
+  },
+  downloadAttachment: (id: string) => `${API_URL}/api/attachments/${id}/download`,
+  deleteAttachment: (id: string) => request<void>(`/api/attachments/${id}`, { method: "DELETE" }),
   teams: () => request<{ members: TeamMember[] }>("/api/teams"),
   inviteMember: (projectId: string, input: { email: string; role: "ADMIN" | "MEMBER" }) =>
     request<{ invitation: { id: string; email: string; role: string; status: string; expiresAt: string } }>(`/api/teams/projects/${projectId}/invitations`, { method: "POST", body: JSON.stringify(input) }),
