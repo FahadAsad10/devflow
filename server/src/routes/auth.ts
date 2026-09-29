@@ -34,7 +34,7 @@ function setAuthCookie(res: Response, userId: string) {
   const token = jwt.sign({ sub: userId }, secret, { expiresIn: "7d" });
   res.cookie("devflow_token", token, {
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     secure: process.env.NODE_ENV === "production",
     maxAge: 7 * 24 * 60 * 60 * 1000,
     domain: process.env.COOKIE_DOMAIN || undefined,
