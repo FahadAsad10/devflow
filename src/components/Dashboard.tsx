@@ -24,7 +24,12 @@ function Dashboard() {
     id: project.id,
     name: project.name,
     description: project.description,
-    status: project.status === "PLANNING" ? "Planning" as const : project.status === "ACTIVE" ? "Active" as const : "Completed" as const,
+    status:
+      project.status === "PLANNING"
+        ? ("Planning" as const)
+        : project.status === "ACTIVE"
+          ? ("Active" as const)
+          : ("Completed" as const),
     dueDate: project.dueDate ?? new Date().toISOString(),
     tasksTotal: project._count?.tasks ?? 0,
     tasksCompleted: project.tasks?.filter((task) => task.status === "DONE").length ?? 0,
@@ -45,10 +50,10 @@ function Dashboard() {
       {error && <p className="form-error" role="alert">{error}</p>}
 
       <div className="stats-grid">
-        <StatCard title="Total Projects" value={loading ? "—" : analytics?.projects.total ?? projects.length} />
-        <StatCard title="Active Tasks" value={loading ? "—" : (analytics?.tasks.todo ?? 0) + (analytics?.tasks.inProgress ?? 0)} />
-        <StatCard title="Completed Projects" value={loading ? "—" : analytics?.projects.completed ?? 0} />
-        <StatCard title="Team Members" value={loading ? "—" : analytics?.teamMembers ?? 0} />
+        <StatCard title="Total Projects" value={loading ? 0 : analytics?.projects.total ?? projects.length} />
+        <StatCard title="Active Tasks" value={loading ? 0 : (analytics?.tasks.todo ?? 0) + (analytics?.tasks.inProgress ?? 0)} />
+        <StatCard title="Completed Projects" value={loading ? 0 : analytics?.projects.completed ?? 0} />
+        <StatCard title="Team Members" value={loading ? 0 : analytics?.teamMembers ?? 0} />
       </div>
 
       {!loading && analytics && (
